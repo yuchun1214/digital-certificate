@@ -1,0 +1,8 @@
+__pycache__/
+files
+database.db
+*.pdf
+test_data/
+*.swp
+venv/
+config.yml
