@@ -1,6 +1,6 @@
-# Certificate Authentication
+# Digital Certificate Authentication Web-app
 
-This is a centralized certificate varification web-app. The app provides several functions. It could issue certificates and allows user to authenticate their certificates.
+This is a centralized certificate authentication web-app. The app provides several functions. It could issue certificates and allows user to authenticate their certificates.
 
 ## Deployment
 
@@ -42,7 +42,7 @@ The website is built by employing the [flask](https://flask.palletsprojects.com/
     'message' : 'successful' | 'failed'
 }
 ```
-reponse the verification result
+reponse the authentication result
 
 The API only accepts file which could be submited by [formData](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
 
