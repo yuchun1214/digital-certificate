@@ -20,7 +20,8 @@
 
       .form-block {
         border-radius: .5rem;
-        padding-top: 50px;
+        padding-top: 2rem;
+        padding-bottom: .5rem;
         background-color: white;
         transition: 0.3s;
         margin-top: 50px; 
@@ -40,6 +41,16 @@
 
       .text-muted {
         color: white;
+      }
+
+      .single{
+        padding-top: 1.5rem;
+      }
+
+      @media (max-width: 570px) {
+        .single {
+          padding-top: 0rem;
+        }
       }
     </style>
   </head>
@@ -82,7 +93,7 @@
         <form class="form-block" id="download-form" method="POST">
           <div class="container-lg">
             <div class="row">
-              <div class="col-sm-3" style="padding-top: 1.5rem;">
+              <div class="col-sm-3 single">
                 <label for="formFile" class="form-label">下載您的證書:</label><br>
               </div>
 
@@ -98,7 +109,7 @@
                   data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="請輸入活動日期"><br><br>
               </div>
 
-              <div class="col-sm-3" style="padding-top: 1.5rem">
+              <div class="col-sm-3 single">
                 <button type="submit" class="btn btn-primary mb-3" id="download-btn">下載</button>
               </div>
 
