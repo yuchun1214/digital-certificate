@@ -86,11 +86,15 @@
                 <label for="formFile" class="form-label">下載您的證書:</label><br>
               </div>
 
-              <div class="col-sm-3">
-                <input class="form-control" type="text" id="id-input" name="id" placeholder="請輸入您的身份證字號"><br><br>
+              <div class="col-sm-2">
+                <input class="form-control" type="text" id="school-input" name="school" placeholder="請輸入您的學校"><br><br>
               </div>
 
-              <div class="col-sm-3">
+              <div class="col-sm-2">
+                <input class="form-control" type="text" id="name-input" name="name" placeholder="請輸入您的名字"><br><br>
+              </div>
+
+              <div class="col-sm-2">
                 <input class="form-control" type="date" id="date-input" name="date"
                   data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="請輸入活動日期"><br><br>
               </div>
@@ -160,8 +164,6 @@
               console.log(value)
               if (value.message === 'ok') {
                 // Fix id-input and date-input
-                var id = document.getElementById('id-input').value;
-                var date = document.getElementById('date-input').value;
                 
                 $('#files').empty();
                 for(var i = 0; i < value.tokens.length; ++i){
@@ -176,8 +178,6 @@
                     `
                   )
                 }
-
-                $('#file-link').attr('href', url);
 
                 $('#file-download-area').collapse('show');
               }else if (value.message === 'file not found'){

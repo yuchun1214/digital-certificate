@@ -53,15 +53,16 @@ def search_file():
         
 
     # check if id and date in the form
-    if not request.form['id'] or not request.form['date']:
+    if not request.form['name'] or not request.form['date'] or not request.form['school']:
         return jsonify({
-            'message' : 'id or date not found',
+            'message' : 'name, school, or activity date is not found',
         })
 
-    id = request.form['id']
+    name = request.form['name']
+    school = request.form['school']
     activity_date = datetime.strptime(request.form['date'], "%Y-%m-%d")
     # search file in files with the filename activity_date/id.pdf
-    files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year, activity_date.month, activity_date.day), '%s*' % id))
+    files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year, activity_date.month, activity_date.day), '%s-%s*' % (school, name)))
 
     if len(files) > 0:
         tokens = []
@@ -69,7 +70,7 @@ def search_file():
     
             # generate a token
             sha256_hash = hashlib.sha256()
-            sha256_hash.update((str(datetime.now().timestamp()) + id).encode())
+            sha256_hash.update((str(datetime.now().timestamp()) + school + name).encode())
             token = sha256_hash.hexdigest()
             print(token)
             tokens.append(token)
@@ -101,6 +102,7 @@ def download_file():
 
     # if token exist, delete it
     filename = entry[1]
+    print(filename)
     cursor.execute("DELETE FROM tokens WHERE token = '%s'" % token)
     con.commit() 
 
