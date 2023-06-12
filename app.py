@@ -65,7 +65,7 @@ def search_file():
     files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year,
                                                          activity_date.month,
                                                          activity_date.day),
-                                '%s_%s*' % (school, name)))
+                                '*%s_%s*' % (school, name)))
 
     if len(files) > 0:
         tokens = []
