@@ -62,7 +62,10 @@ def search_file():
     school = request.form['school']
     activity_date = datetime.strptime(request.form['date'], "%Y-%m-%d")
     # search file in files with the filename activity_date/id.pdf
-    files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year, activity_date.month, activity_date.day), '%s-%s*' % (school, name)))
+    files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year,
+                                                         activity_date.month,
+                                                         activity_date.day),
+                                '%s_%s*' % (school, name)))
 
     if len(files) > 0:
         tokens = []
