@@ -6,6 +6,8 @@ from datetime import datetime
 from os import path
 
 import yaml
+import glob
+import sys
 
 with open('config.yml', 'r') as config_file:
     config = yaml.safe_load(config_file)
@@ -39,7 +41,6 @@ def upload_file():
     
 @app.route('/api/search', methods=['POST'])
 def search_file():
-    print(request.form)
     recaptcha_response = request.form['recaptcha_token']
 
     verify_response = requests.post(url=f'{VERIFY_URL}?secret={SECRET_KEY}&response={recaptcha_response}').json()
@@ -59,24 +60,27 @@ def search_file():
 
     id = request.form['id']
     activity_date = datetime.strptime(request.form['date'], "%Y-%m-%d")
-    print(activity_date)
-    # search file in files with the filename id-activity_date.pdf
-    file_path = path.join('files', '%d%02d%02d' %(activity_date.year, activity_date.month, activity_date.day), '%s.pdf' % (id))
-    print(file_path)
+    # search file in files with the filename activity_date/id.pdf
+    files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year, activity_date.month, activity_date.day), '%s*' % id))
 
-    if path.exists(file_path):
-        # generate a token
-        sha256_hash = hashlib.sha256()
-        sha256_hash.update((str(datetime.now().timestamp()) + id).encode())
-        token = sha256_hash.hexdigest()
-        print(token)
+    if len(files) > 0:
+        tokens = []
+        for file in files:
+    
+            # generate a token
+            sha256_hash = hashlib.sha256()
+            sha256_hash.update((str(datetime.now().timestamp()) + id).encode())
+            token = sha256_hash.hexdigest()
+            print(token)
+            tokens.append(token)
 
-        # insert token into database
-        cursor.execute("INSERT INTO tokens (token) VALUES ('%s')" % (token))
+            # insert token into database
+            cursor.execute("INSERT INTO tokens (token, filename) VALUES ('%s', '%s')" % (token, file))
         con.commit()
         return jsonify({
             'message' : 'ok',
-            'token': token
+            'tokens': tokens,
+            'filenames' : [path.basename(file) for file in files]
         })
     else:
         return jsonify({
@@ -87,23 +91,20 @@ def search_file():
     
 @app.route('/api/download', methods=['GET'])
 def download_file():
-    id = request.args.get('id')
-    date = request.args.get('date')
     token = request.args.get('token')
-    activity_date = activity_date = datetime.strptime(date, "%Y-%m-%d")
     
     # check if token is valid
-    result = cursor.execute("SELECT * FROM tokens WHERE token = '%s'" % token)
-    if result.fetchone() is None:
+    result = cursor.execute("SELECT token, filename FROM tokens WHERE token = '%s'" % token)
+    entry = result.fetchone()
+    if entry is None:
         return redirect('/expired') 
 
     # if token exist, delete it
+    filename = entry[1]
     cursor.execute("DELETE FROM tokens WHERE token = '%s'" % token)
     con.commit() 
 
-    file_path =  'files/%d%02d%02d/%s.pdf' % (activity_date.year, activity_date.month, activity_date.day, id)
-
-    return send_file(file_path,  as_attachment=True)
+    return send_file(filename,  as_attachment=True)
 
 
 @app.route('/', methods=['GET'])

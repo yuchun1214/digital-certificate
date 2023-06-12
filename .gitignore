@@ -6,3 +6,5 @@ test_data/
 *.swp
 venv/
 config.yml
+.next/
+.node_modules/

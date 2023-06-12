@@ -24,6 +24,7 @@
         background-color: white;
         transition: 0.3s;
         margin-top: 50px; 
+        margin-bottom: 2rem; 
       }
 
       .form-block:hover{
@@ -101,13 +102,8 @@
             </div>
 
             <div class="row collapse" id="file-download-area" >
-              <div class="col text-center">
-                <p id="file-section">
-                  <a href="http://" id="file-link">
-                    <img src="/static/pdf.png" style="width: 20px; height: 20px;"alt="">
-                    點擊以下載
-                  </a>
-                </p>
+              <div class="col text-center" id="files">
+                
               </div>
             </div>
 
@@ -163,9 +159,24 @@
             .then(value => {
               console.log(value)
               if (value.message === 'ok') {
+                // Fix id-input and date-input
                 var id = document.getElementById('id-input').value;
                 var date = document.getElementById('date-input').value;
-                var url = '/api/download?id=' + id + '&date=' + date + '&token=' + value.token;
+                
+                $('#files').empty();
+                for(var i = 0; i < value.tokens.length; ++i){
+                  var token = value.tokens[i];
+                  var url = '/api/download?token=' + token;
+                  $('#files').append(
+                    `<p id="file-section"> <a href=${url} class="file-link">
+                        <img src="/static/pdf.png" style="width: 20px; height: 20px;"alt="">
+                        ${value.filenames[i]}
+                      </a>
+                    </p>
+                    `
+                  )
+                }
+
                 $('#file-link').attr('href', url);
 
                 $('#file-download-area').collapse('show');

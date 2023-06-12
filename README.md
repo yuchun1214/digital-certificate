@@ -84,6 +84,7 @@ CREATE TABLE hash_table (
 ```
 CREATE TABLE tokens(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  token TEXT NOT NULL UNIQUE
-)
+  token TEXT NOT NULL UNIQUE,
+  filename TEXT NOT NULL
+);
 ```
