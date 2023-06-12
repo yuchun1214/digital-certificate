@@ -53,19 +53,19 @@ def search_file():
         
 
     # check if id and date in the form
-    if not request.form['name'] or not request.form['date'] or not request.form['school']:
+    if not request.form['name'] or not request.form['date']:
         return jsonify({
-            'message' : 'name, school, or activity date is not found',
+            'message' : 'name or activity date is not found',
         })
 
     name = request.form['name']
-    school = request.form['school']
+    # school = request.form['school']
     activity_date = datetime.strptime(request.form['date'], "%Y-%m-%d")
     # search file in files with the filename activity_date/id.pdf
     files = glob.glob(path.join('files', '%d%02d%02d' % (activity_date.year,
                                                          activity_date.month,
                                                          activity_date.day),
-                                '*%s_%s*' % (school, name)))
+                                '*%s*' % (name)))
 
     if len(files) > 0:
         tokens = []
@@ -73,7 +73,7 @@ def search_file():
     
             # generate a token
             sha256_hash = hashlib.sha256()
-            sha256_hash.update((str(datetime.now().timestamp()) + school + name).encode())
+            sha256_hash.update((str(datetime.now().timestamp()) + name).encode())
             token = sha256_hash.hexdigest()
             print(token)
             tokens.append(token)

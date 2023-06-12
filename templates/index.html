@@ -86,15 +86,12 @@
                 <label for="formFile" class="form-label">下載您的證書:</label><br>
               </div>
 
-              <div class="col-sm-2">
-                <input class="form-control" type="text" id="school-input" name="school" placeholder="請輸入您的學校"><br><br>
-              </div>
 
-              <div class="col-sm-2">
+              <div class="col-sm-3">
                 <input class="form-control" type="text" id="name-input" name="name" placeholder="請輸入您的名字"><br><br>
               </div>
 
-              <div class="col-sm-2">
+              <div class="col-sm-3">
                 <input class="form-control" type="date" id="date-input" name="date"
                   data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="請輸入活動日期"><br><br>
               </div>
@@ -184,6 +181,8 @@
                 alert('Oops! 找不到您的證書QQ');
               }else if (value.message === 'recaptcha failed'){
                 alert('Oops! reCAPTCHA 驗證失敗，請試試看重新整理網頁');
+              }else{
+                alert('Oops! 您輸入的資料有錯喔');
               }
             });
         });
