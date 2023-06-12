@@ -5,7 +5,7 @@ This is a centralized certificate authentication web-app. The app provides sever
 ## Deployment
 
 There are two files used to store the data, one is `config.yml` and another is `datatbase.db`.
-The web-app has used [Google reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3) to protect the website. For those sensitive information such as the `site key` and `secret key`, which is used to verify the, user are store in the `config.yml` file. The hash value and tokens are stored in the database.
+The web-app has used [Google reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3) to protect the website. For those sensitive information such as the `site key` and `secret key`, which is used to verify the user, are store in the `config.yml` file. The hash value and tokens are stored in the database.
 
 **Before starting the server, it is of importance to copy those to files two the server**
 
