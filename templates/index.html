@@ -212,12 +212,25 @@ const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstra
 
 document.getElementById('upload-form').addEventListener('submit', function(event) {
   event.preventDefault();
-  var formData = new FormData(event.target);
-  fetch('/api/upload', {method: 'POST', body: formData})
-  .then(response => response.json())
-  .then(res => {
-    document.getElementById('result').textContent = res.message
-    $('#varification-result-modal').modal('show');
+  grecaptcha.ready(function() {
+    grecaptcha.execute('{{ site_key }}', { action: 'submit' }).then(function(token) {
+      var formData = new FormData(event.target);
+      formData.append('recaptcha_token', token);
+      fetch('/api/upload', {method: 'POST', body: formData})
+      .then(response => {
+        if (response.status === 200){
+          return response.json();
+        }else{
+          throw new Error('Oops! reCAPTCHA 驗證失敗，請試試看重新整理網頁')
+        }
+      })
+      .then(res => {
+        document.getElementById('result').textContent = res.message
+        $('#varification-result-modal').modal('show');
+      }).catch(error => {
+        alert(error.message);
+      })
+    });
   });
 });
 

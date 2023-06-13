@@ -26,6 +26,16 @@ VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify'
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
+    recaptcha_response = request.form['recaptcha_token']
+
+    verify_response = requests.post(url=f'{VERIFY_URL}?secret={SECRET_KEY}&response={recaptcha_response}').json()
+    print(verify_response)
+    if verify_response['success'] == True or verify_response['score'] < 0.5:
+        return jsonify({
+            'message' : 'recaptcha failed',
+        }), 403
+
+    print(recaptcha_response)
     file_bytes = file.read()
     sha256_hash = hashlib.sha256()
     sha256_hash.update(file_bytes)
