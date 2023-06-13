@@ -30,12 +30,12 @@ def upload_file():
 
     verify_response = requests.post(url=f'{VERIFY_URL}?secret={SECRET_KEY}&response={recaptcha_response}').json()
     print(verify_response)
-    if verify_response['success'] == True or verify_response['score'] < 0.5:
+    if verify_response['success'] == False or verify_response['score'] < 0.5:
         return jsonify({
             'message' : 'recaptcha failed',
         }), 403
 
-    print(recaptcha_response)
+    # print(recaptcha_response)
     file_bytes = file.read()
     sha256_hash = hashlib.sha256()
     sha256_hash.update(file_bytes)
