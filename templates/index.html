@@ -11,12 +11,29 @@
 
     <style>
       
-      body{
+      body {
         background-color: rgba(245, 247, 250, 1);
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        position: relative;
       }
+
+      .background-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("/static/background3.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        /* background-color: rgba(0, 0, 0, 0.5); */
+        opacity: 0.3;
+        z-index: -1;
+      }
+
 
       .form-block {
         border-radius: .5rem;
@@ -55,7 +72,7 @@
     </style>
   </head>
 <body>
-
+  <div class="background-overlay"></div>
   <nav class="navbar" style="background-color: white;">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Digital Certificate</a>
@@ -147,9 +164,9 @@
 
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2023 Digital Certificate All rights reserved.</p>
-      <p>Created by Yu-Chun Lin | Contact: <a href="mailto:ostrich-gists-00@icloud.com">ostrich-gists-00@icloud.com</a></p>
-      <p>Attribute: <a href="https://www.flaticon.com/free-icons/pdf" title="pdf icons">Pdf icons created by Dimitry Miroliubov - Flaticon</a></p>
+      <p>&copy; 2023 Digital Certificate All rights reserved. Created by Yu-Chun Lin | Contact: <a href="mailto:ostrich-gists-00@icloud.com">Email</a></p>
+      <!-- <p></p> -->
+      <span>Attribute: <a href="https://www.flaticon.com/free-icons/pdf" title="pdf icons">Pdf icons created by Dimitry Miroliubov - Flaticon</a></span>
     </div>
   </footer>
   
