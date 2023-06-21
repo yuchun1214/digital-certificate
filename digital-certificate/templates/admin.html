@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Admin - Digital Certificate
+{% endblock %}
+
+{% block style %}
+<style>
+    #block {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        background-color: white;
+        border-radius: .5rem;
+        padding: 20px;
+        transition: 0.3s;
+    }
+
+    #block label{
+        text-align: center;
+    }
+
+    #block:hover{
+        box-shadow: 0 0 11px rgba(33,33,33,.2);
+    }
+
+    #form {
+        margin-bottom: 50px;
+    }
+
+    .rule {
+        margin-bottom: 20px;
+        /* text-align: center; */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-lg" id="block">
+    <form class="form-block" id="form" enctype="multipart/form-data">
+        <div class="mb-3 row">
+            <label for="files" class="col-sm-2 col-form-label">Please Select Files</label>
+            <div class="col-sm-3">
+                <input class="form-control" type="file" id="files" name="files" accept=".pdf" multiple>
+            </div>
+
+            <label for="date-input" class="col-sm-2 col-form-label">Date</label>
+            <div class="col-sm-3">
+                <input class="form-control" type="date" id="date-input" name="date"
+                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="請輸入活動日期">
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+
+        <input type="hidden" name="attributes" id="attributes">
+
+        <div class="mb-3 row rule"> <!-- Combine the class attributes into a single attribute -->
+            <label class="col-sm-2 col-form-label">Attribute Name</label>
+            <div class="col-sm-3">
+                <input class="form-control name-input" type="text">
+            </div>
+
+            <label class="col-sm-2 col-form-label">Value</label>
+            <div class="col-sm-3">
+                <input class="form-control value-input" type="text">
+            </div>
+
+            <div class="col-sm-2">
+                <button class="btn btn-danger delete-btn" type="button">Delete</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-3 row">
+        <div class="col-sm-2">
+            <button class="btn btn-primary" id="add-attr-btn">Add</button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" id="upload-btn">Upload</button>
+        </div>
+        <div class="col-sm-8"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    // Define deleteBtnOnClick as a regular function
+    function deleteBtnOnClick(event) {
+        event.preventDefault();
+        // console.log('delete');
+        $(this).parent().parent().remove();
+    }
+
+    $('#add-attr-btn').click(function(event) {
+        event.preventDefault();
+
+        // Append the new attribute row with delete button
+        $('#form').append(`
+            <div class="mb-3 row rule">
+                <label class="col-sm-2 col-form-label">Attribute Name</label>
+                <div class="col-sm-3">
+                    <input class="form-control name-input" type="text">
+                </div>
+
+                <label class="col-sm-2 col-form-label">Value</label>
+                <div class="col-sm-3">
+                    <input class="form-control value-input" type="text">
+                </div>
+
+                <div class="col-sm-2">
+                    <button class="btn btn-danger delete-btn" type="button">Delete</button>
+                </div>
+            </div>
+        `);
+
+        // Attach click event to the new delete button
+        $('.rule:last').on('click', '.delete-btn', deleteBtnOnClick);
+    });
+
+    // Attach initial click event to the delete buttons
+    $('.rule').on('click', '.delete-btn', deleteBtnOnClick);
+
+    
+
+    function collectAttributes() {
+        var attributes = [];        
+
+        $('.rule').each(function() {
+            attributes.push({
+                name: $(this).find('.name-input').val(),
+                value: $(this).find('.value-input').val()
+            })
+
+        })
+
+        return attributes;
+    }
+
+    var uploadFunction = (event)=>{
+        var attrs = collectAttributes();
+        console.log(attrs)
+        $('#attributes').val(JSON.stringify(attrs));
+
+        var formData = new FormData(document.getElementById('form'));
+        fetch('/admin/upload', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+    }
+    $('#upload-btn').click(uploadFunction)
+</script>
+{% endblock %}
+

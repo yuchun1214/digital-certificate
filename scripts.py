@@ -51,15 +51,13 @@ def insert_pdfs_info(directory):
                 print('Hash value already exists in database: %s' % hash_value)
 
 if __name__ == '__main__':
-    # generate test
-    for i in range(100):
-        shutil.copy('test.pdf', os.path.join('test_data', 'test%d.pdf' % i))
-
 
     output_directory = os.path.join('files', '20230610')
     os.makedirs(output_directory, exist_ok=True)
 
-    set_pdfs_info('test_data', output_directory, IndirectPdfDict(IssueDate='2023/06/10', IssuedBy='Eugene Y. Lin'))
+    set_pdfs_info('All-files', output_directory,
+                  IndirectPdfDict(IssueDate='2023/06/10',
+                                  IssuedBy='台灣數學奧林匹亞辦公室-雲嘉南辦公室'))
 
     insert_pdfs_info(output_directory)
 

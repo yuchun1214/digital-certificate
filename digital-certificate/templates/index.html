@@ -1,41 +1,12 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Digital Certificate</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <!-- <script src="https://www.google.com/recaptcha/api.js"></script> -->
+{% extends 'base.html' %}
 
-    
+{% block title %}
+  Digital Certificate
+{% endblock %}
 
-    <style>
-      
-      body {
-        background-color: rgba(245, 247, 250, 1);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        position: relative;
-      }
-
-      .background-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url("/static/background3.jpg");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        /* background-color: rgba(0, 0, 0, 0.5); */
-        opacity: 0.3;
-        z-index: -1;
-      }
-
-
-      .form-block {
+{% block style %}
+<style>
+    .form-block {
         border-radius: .5rem;
         padding-top: 2rem;
         padding-bottom: .5rem;
@@ -49,12 +20,7 @@
         box-shadow: 0 0 11px rgba(33,33,33,.2); 
       }
 
-      .footer {
-        background-color: white;
-        padding: 20px 0;
-        text-align: center;
-        margin-top: auto;
-      }
+      
 
       .text-muted {
         color: white;
@@ -69,17 +35,12 @@
           padding-top: 0rem;
         }
       }
-    </style>
-  </head>
-<body>
-  <div class="background-overlay"></div>
-  <nav class="navbar" style="background-color: white;">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">Digital Certificate</a>
-    </div>
-  </nav>
+</style>
+{% endblock %}
 
-  <div class="container-lg" id="varification-block">
+
+{% block content %}
+<div class="container-lg" id="varification-block">
     <div class="row">
       <div class="col" id="upload">
         <form class="form-block" id="upload-form">
@@ -162,21 +123,10 @@
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2023 Digital Certificate All rights reserved. Created by Yu-Chun Lin | Contact: <a href="mailto:ostrich-gists-00@icloud.com">Email</a></p>
-      <!-- <p></p> -->
-      <span>Attribute: <a href="https://www.flaticon.com/free-icons/pdf" title="pdf icons">Pdf icons created by Dimitry Miroliubov - Flaticon</a></span>
-    </div>
-  </footer>
-  
-  
+{% endblock %}
 
-  
-  <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-  <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-  <script>
+{% block script %}
+<script>
     function onSubmit(event) {
       event.preventDefault();
       grecaptcha.ready(function() {
@@ -221,38 +171,33 @@
 
     // Trigger onSubmit function when the reCAPTCHA submit button is clicked
     document.querySelector('#download-btn').addEventListener('click', onSubmit);
-  </script>
 
-<script>
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-document.getElementById('upload-form').addEventListener('submit', function(event) {
-  event.preventDefault();
-  grecaptcha.ready(function() {
-    grecaptcha.execute('{{ site_key }}', { action: 'submit' }).then(function(token) {
-      var formData = new FormData(event.target);
-      formData.append('recaptcha_token', token);
-      fetch('/api/upload', {method: 'POST', body: formData})
-      .then(response => {
-        if (response.status === 200){
-          return response.json();
-        }else{
-          throw new Error('Oops! reCAPTCHA 驗證失敗，請試試看重新整理網頁')
-        }
-      })
-      .then(res => {
-        document.getElementById('result').textContent = res.message
-        $('#varification-result-modal').modal('show');
-      }).catch(error => {
-        alert(error.message);
-      })
+    document.getElementById('upload-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute('{{ site_key }}', { action: 'submit' }).then(function(token) {
+          var formData = new FormData(event.target);
+          formData.append('recaptcha_token', token);
+          fetch('/api/upload', {method: 'POST', body: formData})
+          .then(response => {
+            if (response.status === 200){
+              return response.json();
+            }else{
+              throw new Error('Oops! reCAPTCHA 驗證失敗，請試試看重新整理網頁')
+            }
+          })
+          .then(res => {
+            document.getElementById('result').textContent = res.message
+            $('#varification-result-modal').modal('show');
+          }).catch(error => {
+            alert(error.message);
+          })
+        });
+      });
     });
-  });
-});
-
-
 </script>
 
-</body>
-</html>
+{% endblock %}

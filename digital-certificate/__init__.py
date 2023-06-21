@@ -18,6 +18,8 @@ def create_app(test_config=None):
     )
     app.config['reCAPTCHA_SITE_KEY'] = reCAPTCHA_SITE_KEY
     app.config['reCAPTCHA_SECRET_KEY'] = reCAPTCHA_SECRET_KEY
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.instance_path, 'uploads')
+    app.config['reCAPTCHA_VERIFY_URL'] = 'https://www.google.com/recaptcha/api/siteverify'
 
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
@@ -34,17 +36,16 @@ def create_app(test_config=None):
     db.init_app(app)
 
     from . import auth
+    auth.init_auth(app)
     app.register_blueprint(auth.bp)
 
     from . import certificates
     app.register_blueprint(certificates.bp)
     app.add_url_rule('/', endpoint='index')
 
-
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-    
+    from . import admin
+    app.register_blueprint(admin.bp)
+    app.add_url_rule('/admin', endpoint='admin')
 
 
     return app

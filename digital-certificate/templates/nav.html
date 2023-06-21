@@ -1,0 +1,115 @@
+<nav class="navbar" style="background-color: white;">
+    <div class="container-lg">
+      <a class="navbar-brand" href="/">Digital Certificate</a>
+    
+      {% if g.user %}
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/admin">Admin</a>
+        </li>
+      </ul>
+
+        <span class="navbar-text">
+          <a href="/auth/logout">Logout</a>
+        </span>
+      {% else %}
+        <span class="navbar-text">
+          <a id="login" href="/auth/login">Login</a>
+          <!-- <a href="/auth/register">Register</a> -->
+        </span>
+      {% endif %}
+    </div>
+</nav>
+
+{% if g.user  == None %}
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input name="username" id="username" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <div id="alert-placeholder" style="width: 100%;">
+
+          </div>
+
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="login-btn">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+
+<script>
+    var login = document.getElementById("login");
+    login.addEventListener("click", function(event){
+        event.preventDefault()
+        $('#loginModal').modal('show');
+    });
+
+    const appendAlert = (message, type)=>{
+      const placeholder = document.getElementById("alert-placeholder");
+      // const wrapper = document.createElement('div')
+      placeholder.innerHTML = [
+      `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+      `   <div>${message}</div>`,
+      '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+      '</div>'
+      ].join('')
+      // placeholder.append(wrapper)
+    }
+
+    var login_btn = document.getElementById("login-btn");
+    login_btn.addEventListener('click', (event)=>{
+        event.preventDefault();
+        grecaptcha.ready(function(){
+          grecaptcha.execute('{{ site_key }}', { action: 'submit'}).then(function(token){
+              var formData = new FormData(document.getElementById("login-form"));
+              formData.append('recaptcha_token', token);
+              fetch("/auth/login", {
+                  method: "POST",
+                  body: formData
+              }).then(response => {
+                  if (response.status == 200){
+                      window.location.href = "/admin";
+                  }else if(response.status == 401){
+                      appendAlert("reCAPTCHA Verification Failed, please reload the page", "warning")
+
+                      setTimeout(()=>{
+                          $('.alert').transition('fade')
+                      }, 3000)
+                  }else if(response.status == 403){
+                      appendAlert("Login failed, please try again", "danger")
+
+                      setTimeout(()=>{
+                          $('.alert').transition('fade')
+                      }, 3000)
+                  }
+              })
+          })
+        })
+
+
+        
+    })
+    
+</script>
+
+{% endif %}
