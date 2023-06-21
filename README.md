@@ -4,10 +4,15 @@ This is a centralized certificate authentication web-app. The app provides sever
 
 ## Deployment
 
-There are two files used to store the data, one is `config.yml` and another is `datatbase.db`.
-The web-app has used [Google reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3) to protect the website. For those sensitive information such as the `site key` and `secret key`, which is used to verify the user, are store in the `config.yml` file. The hash value and tokens are stored in the database.
+`config.yml` should be included in the root directory. The `config.yml` file stores the keys of [Google reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3) and it should be like
+```
+SITE_KEY: [site key]
+SECRET_KEY: [secret key]
+```
+The web-app has used [Google reCAPTCHA v3](https://developers.google.com/recaptcha/docs/v3) to protect the website. The hash value and tokens are stored in the database.
 
-**Before starting the server, it is of importance to copy those to files two the server**
+**Before starting the server, it is of importance to setup the config file**
+
 
 ### Setup the virtual environment
 
@@ -15,6 +20,12 @@ The web-app has used [Google reCAPTCHA v3](https://developers.google.com/recaptc
 python3 -m venv venv
 source venv/bin/activate
 python3 -m pip install -r requirements.txt
+```
+
+### Initialize Database
+
+```shell=
+flask --app digital-certificate init-db
 ```
 
 ### Start production server
@@ -71,20 +82,3 @@ If all the checkpoints are passed, the response will contain a token for user to
 * Response: pdf file
 
 The token gotten from the API `/api/search` would be used here to download the file only once. If user want to download a file several times, they have to use the search file to re-obtain the token. The relevant information used to download the file would be embeded in the query string. The qury string would have `id`, `date`, and `token`.
-
-## DB Scheme
-
-```
-CREATE TABLE hash_table (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  hash_value TEXT NOT NULL UNIQUE
-);
-```
-
-```
-CREATE TABLE tokens(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  token TEXT NOT NULL UNIQUE,
-  filename TEXT NOT NULL
-);
-```

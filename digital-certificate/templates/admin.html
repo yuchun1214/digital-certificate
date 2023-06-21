@@ -80,6 +80,20 @@ Admin - Digital Certificate
         <div class="col-sm-8"></div>
     </div>
 </div>
+
+<div class="modal " tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="modal-message">Modal body text goes here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block script %}
@@ -145,7 +159,17 @@ Admin - Digital Certificate
         fetch('/admin/upload', {
             method: 'POST',
             body: formData
-        }).then(response => response.json())
+        }).then(response => response.json()).then(data => {
+            console.log(data);
+            if (data['status'] == 'success') {
+                // alert('上傳成功');
+                $('#modal-message').text('上傳成功');
+                $('.modal').modal('show');
+            } else {
+                // alert('上傳失敗');
+                $('#modal-message').text('上傳失敗');
+            }
+        })
     }
     $('#upload-btn').click(uploadFunction)
 </script>
