@@ -8,7 +8,8 @@ import glob
 import sys
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app,
+    send_from_directory
 )
 from werkzeug.exceptions import abort
 from .auth import recaptcha_required
@@ -111,3 +112,8 @@ def index_page(name=None):
 def expired_page(name=None):
 
     return render_template('expired.html')
+
+
+@bp.route('/favicon.ico')
+def favicon():
+    return send_from_directory(path.join(current_app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.mircrosoft.icon')
