@@ -54,7 +54,7 @@ Admin - Digital Certificate
         <input type="hidden" name="attributes" id="attributes">
 
         <div class="mb-3 row rule"> <!-- Combine the class attributes into a single attribute -->
-            <label class="col-sm-2 col-form-label">Attribute Name(English)</label>
+            <label class="col-sm-2 col-form-label">Attribute Name(English Only)</label>
             <div class="col-sm-3">
                 <input class="form-control name-input" type="text">
             </div>
@@ -71,13 +71,15 @@ Admin - Digital Certificate
     </form>
 
     <div class="mb-3 row">
+
+        <div class="col-sm-4"></div>
         <div class="col-sm-2">
-            <button class="btn btn-primary" id="add-attr-btn">Add</button>
+            <button class="btn btn-light" id="add-attr-btn">Add an attribute</button>
         </div>
         <div class="col-sm-2">
             <button type="button" class="btn btn-primary" id="upload-btn">Upload</button>
         </div>
-        <div class="col-sm-8"></div>
+        <div class="col-sm-4"></div>
     </div>
 </div>
 
@@ -85,7 +87,7 @@ Admin - Digital Certificate
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
+            <!--- <h5 class="modal-title" id="modal-title"></h5> -->
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -111,7 +113,7 @@ Admin - Digital Certificate
         // Append the new attribute row with delete button
         $('#form').append(`
             <div class="mb-3 row rule">
-                <label class="col-sm-2 col-form-label">Attribute Name</label>
+                <label class="col-sm-2 col-form-label">Attribute Name(English Only)</label>
                 <div class="col-sm-3">
                     <input class="form-control name-input" type="text">
                 </div>
@@ -159,17 +161,36 @@ Admin - Digital Certificate
         fetch('/admin/upload', {
             method: 'POST',
             body: formData
-        }).then(response => response.json()).then(data => {
-            console.log(data);
-            if (data['status'] == 'success') {
+        }).then(response => {
+            if (response.ok){
+                return response.json();
+            }else if (response.status === 400){
+                return response.json();
+            }else if (response.status === 413){
+                throw new Error("The files are too large(Max : 10MB). You may upload files separartely.");
+            }else if (response.status === 500){
+                return response.json();
+            }else{
+                throw new Error("Network response is not ok"); 
+            }
+        }).then(function (_data){
+            const _status = _data['status']
+            const _message = _data['message']
+            if (_status === 'success') {
                 // alert('上傳成功');
                 $('#modal-message').text('上傳成功');
                 $('.modal').modal('show');
-            } else {
+            } else if(_status){
                 // alert('上傳失敗');
-                $('#modal-message').text('上傳失敗');
+                // console.log(data.message);
+                $('#modal-message').text('Failed to upload since ' + _message);
+                $('.modal').modal('show');
             }
-        })
+        }).catch(error => {
+            console.log('Error:', error.message);
+            $('#modal-message').text(error.message)
+            $('.modal').modal('show');
+        });
     }
     $('#upload-btn').click(uploadFunction)
 </script>

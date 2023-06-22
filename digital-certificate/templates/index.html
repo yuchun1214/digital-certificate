@@ -110,7 +110,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Authentication Result</h5>
+          <h5 class="modal-title" id="modal-title">Authentication Result</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -185,15 +185,20 @@
           .then(response => {
             if (response.status === 200){
               return response.json();
+            }else if(response.status === 413){
+              throw new Error('您的檔案太大囉');
             }else{
               throw new Error('Oops! reCAPTCHA 驗證失敗，請試試看重新整理網頁')
             }
           })
           .then(res => {
+            document.getElementById('modal-title').textContent = "驗證結果" 
             document.getElementById('result').textContent = res.message
             $('#varification-result-modal').modal('show');
           }).catch(error => {
-            alert(error.message);
+            document.getElementById('modal-title').textContent = "Warning" 
+            document.getElementById('result').textContent = error.message;
+            $('#varification-result-modal').modal('show');
           })
         });
       });

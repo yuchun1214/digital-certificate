@@ -20,8 +20,12 @@ bp = Blueprint('admin', __name__)
 @bp.route('/admin/upload', methods=['POST'])
 @login_required
 def upload():
-    # print(request.form)
-    # print(request.form['date'])
+    print(request.form)
+    print(request.form['date'])
+    
+    # check date
+    if len(request.form['date']) == 0:
+       return jsonify({'status' : 'failed', 'message' : 'date is not set'}), 400
 
     #  add attributes
     attributes = json.loads(request.form['attributes'])
@@ -45,29 +49,30 @@ def upload():
     for file in uploaded_files:
         filename = os.path.join(upload_directory, file.filename)
         file.save(filename)
+        try:
+            with open(filename, 'rb') as input_pdf_file:
+                reader = PdfReader(input_pdf_file)
 
-        with open(filename, 'rb') as input_pdf_file:
-            reader = PdfReader(input_pdf_file)
+                # Modify PDF metadata
+                reader.Info = meta
+                reader.Info.IssuedTime = str(datetime.now()) 
 
-            # Modify PDF metadata
-            reader.Info = meta
-            reader.Info.IssuedTime = str(datetime.now()) 
+                # Write the modified PDF back to the file
+                PdfWriter(filename, trailer=reader).write()
 
-            # Write the modified PDF back to the file
-            PdfWriter(filename, trailer=reader).write()
-
-        with open(filename, 'rb') as pdf_file:
-            sha256_hash = hashlib.sha256()
-            for chunk in iter(lambda: pdf_file.read(4096), b''):
-                sha256_hash.update(chunk)
-            file_hash = sha256_hash.hexdigest()
-            print(file_hash)
-            try:
-                db.execute("INSERT INTO hash_table (hash_value) VALUES ('%s')" % file_hash)
-            except db.IntegrityError:
-                print(filename + ' already exists in the database')
-            db.commit()
-
+            with open(filename, 'rb') as pdf_file:
+                sha256_hash = hashlib.sha256()
+                for chunk in iter(lambda: pdf_file.read(4096), b''):
+                    sha256_hash.update(chunk)
+                file_hash = sha256_hash.hexdigest()
+                print(file_hash)
+                try:
+                    db.execute("INSERT INTO hash_table (hash_value) VALUES ('%s')" % file_hash)
+                except db.IntegrityError:
+                    print(filename + ' already exists in the database')
+                db.commit()
+        except Exception as e:
+            return jsonify({'status' : 'failed', 'message' : str(e)}), 500
             
     return jsonify({'status': 'success'}), 200
 
