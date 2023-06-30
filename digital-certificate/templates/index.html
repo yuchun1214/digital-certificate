@@ -195,7 +195,7 @@
             console.log(res)
             document.getElementById('modal-title').textContent = "驗證結果"
             if(res.message === 'successful'){
-              document.getElementById('result').textContent = `此證書為${res.info.Issuer}所發行於${res.info.IssuedTime}所發出關於${res.info.Activity}之證明`;
+              document.getElementById('result').textContent = `此證書為${res.info.Issuer}所發行於${res.info.IssuedTime}所發出關於「${res.info.Activity}」之證明`;
             }else{
               document.getElementById('result').textContent = `此非本單位所發出之有效證書`
             }

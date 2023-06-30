@@ -58,7 +58,7 @@ def upload():
                 reader.Info = meta
                 dt1 = datetime.utcnow().replace(tzinfo=timezone.utc)
                 dt2 = dt1.astimezone(timezone(timedelta(hours=8)))
-                reader.Info.IssuedTime = str(dt2) 
+                reader.Info.IssuedTime = f"{dt2:%Y-%m-%d}"
 
                 # Write the modified PDF back to the file
                 PdfWriter(filename, trailer=reader).write()
