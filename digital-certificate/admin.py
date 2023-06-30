@@ -1,7 +1,7 @@
 import os
 import json
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone,timedelta
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app
 )
@@ -55,7 +55,9 @@ def upload():
 
                 # Modify PDF metadata
                 reader.Info = meta
-                reader.Info.IssuedTime = str(datetime.now()) 
+                dt1 = datetime.utcnow().replace(tzinfo=timezone.utc)
+                dt2 = dt1.astimezone(timezone(timedelta(hours=8)))
+                reader.Info.IssuedTime = str(dt2) 
 
                 # Write the modified PDF back to the file
                 PdfWriter(filename, trailer=reader).write()
