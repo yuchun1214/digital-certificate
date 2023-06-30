@@ -38,6 +38,7 @@ def upload():
     activity_date = datetime.strptime(request.form['date'], "%Y-%m-%d")
     activity_date = "{0:%Y%m%d}".format(activity_date)
     upload_directory = os.path.join(current_app.config['UPLOAD_FOLDER'], activity_date)
+
     
     try:
         os.makedirs(upload_directory)
@@ -67,7 +68,7 @@ def upload():
                 file_hash = sha256_hash.hexdigest()
                 print(file_hash)
                 try:
-                    db.execute("INSERT INTO hash_table (hash_value) VALUES ('%s')" % file_hash)
+                    db.execute("INSERT INTO hash_table (filename, upload_date, hash_value) VALUES ('%s', '%s', '%s')" % (file.filename, activity_date,file_hash))
                 except db.IntegrityError:
                     print(filename + ' already exists in the database')
                 db.commit()

@@ -4,6 +4,8 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE hash_table (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  filename TEXT NOT NULL,
+  upload_date DATE NOT NULL,
   hash_value TEXT NOT NULL UNIQUE
 );
 
