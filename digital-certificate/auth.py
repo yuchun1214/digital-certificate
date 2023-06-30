@@ -97,7 +97,7 @@ def recaptcha_required(view):
 
 
 
-@bp.route('/login', methods=('GET', 'POST'))
+@bp.route('/login', methods=['POST'])
 @recaptcha_required
 def login():
     if request.method == 'POST':
@@ -123,7 +123,7 @@ def login():
             return jsonify({'message' : 'successful'})
         else:
             return jsonify({'message' : 'failed'}), 403
-        
+     
 
 @bp.before_app_request
 def load_logged_in_user():
