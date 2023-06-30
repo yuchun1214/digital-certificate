@@ -1,11 +1,13 @@
 import hashlib
 import requests
 from datetime import datetime
-from os import path
+from os import path, remove
 
 import yaml
 import glob
 import sys
+
+from pdfrw import PdfReader
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app,
@@ -23,19 +25,32 @@ bp = Blueprint('certificates', __name__)
 @recaptcha_required
 def upload_file():
     file = request.files['file']
+    temp_folder_name = current_app.config['TEMP_FOLDER']
+    now = str(datetime.now())
+    filename = path.join(temp_folder_name, path.basename(file.filename) + now + '.pdf')
+    file.save(filename)
     
-    file_bytes = file.read()
-    sha256_hash = hashlib.sha256()
-    sha256_hash.update(file_bytes)
-    file_hash = sha256_hash.hexdigest()
+    with open (filename, 'rb') as file:
+        file_bytes = file.read()
+        sha256_hash = hashlib.sha256()
+        sha256_hash.update(file_bytes)
+        file_hash = sha256_hash.hexdigest()
 
     print(file_hash)
     # 判斷該 hash 值是否在資料庫中
     db = get_db()
     result = db.execute("SELECT * FROM hash_table WHERE hash_value = '%s'" % file_hash)
     if result.fetchone() is not None:
-        return jsonify({'message' : 'successful'})
+        pdffile = PdfReader(filename)
+        # print(pdffile.Info)
+        info = {}
+        for key in pdffile.Info:
+            info[key[1:]] = pdffile.Info[key][1:-1]
+        print(info)
+        remove(filename)
+        return jsonify({'message' : 'successful', 'info' : info})
     else:
+        remove(filename)
         return jsonify({'message' : 'failed'})
     
 @bp.route('/api/search', methods=['POST'])

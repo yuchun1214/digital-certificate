@@ -192,8 +192,9 @@
             }
           })
           .then(res => {
+            console.log(res)
             document.getElementById('modal-title').textContent = "驗證結果" 
-            document.getElementById('result').textContent = res.message
+            document.getElementById('result').textContent = `此證書為${res.info.Issuer}所發行於${res.info.IssuedTime}所發出關於${res.info.Activity}之證明`;
             $('#varification-result-modal').modal('show');
           }).catch(error => {
             document.getElementById('modal-title').textContent = "Warning" 

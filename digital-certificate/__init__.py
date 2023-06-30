@@ -19,6 +19,7 @@ def create_app(test_config=None):
     app.config['reCAPTCHA_SITE_KEY'] = reCAPTCHA_SITE_KEY
     app.config['reCAPTCHA_SECRET_KEY'] = reCAPTCHA_SECRET_KEY
     app.config['UPLOAD_FOLDER'] = os.path.join(app.instance_path, 'uploads')
+    app.config['TEMP_FOLDER'] = os.path.join(app.instance_path, 'temp')
     app.config['reCAPTCHA_VERIFY_URL'] = 'https://www.google.com/recaptcha/api/siteverify'
 
     if test_config is None:
@@ -29,6 +30,20 @@ def create_app(test_config=None):
 
     try:
         os.makedirs(app.instance_path)
+    except OSError:
+        pass
+
+    # create upload folder
+    try:
+        upload_folder_name = app.config['UPLOAD_FOLDER']
+        os.makedirs(upload_folder_name)
+    except OSError:
+        pass
+
+    # create temp folder
+    try:
+        temp_folder_name = app.config['TEMP_FOLDER']
+        os.makedirs(temp_folder_name)
     except OSError:
         pass
 
