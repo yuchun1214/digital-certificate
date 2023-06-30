@@ -82,4 +82,15 @@ def upload():
 @bp.route('/admin', methods=['GET'])
 @login_required
 def admin():
-    return render_template('admin.html')
+    db = get_db()
+    result = db.execute("SELECT id, filename, upload_date FROM hash_table")
+    data = result.fetchall()
+    files = []
+    for i in data:
+        files.append({
+            'id' : i['id'],
+            'filename' : i['filename'],
+            'upload_date' : i['upload_date']
+        })
+    print(files)
+    return render_template('admin.html', uploaded_files=files)

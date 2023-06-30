@@ -56,7 +56,23 @@ Admin - Digital Certificate
         <div class="mb-3 row rule"> <!-- Combine the class attributes into a single attribute -->
             <label class="col-sm-2 col-form-label">Attribute Name(English Only)</label>
             <div class="col-sm-3">
-                <input class="form-control name-input" type="text">
+                <input class="form-control name-input" type="text" value="Issuer">
+            </div>
+
+            <label class="col-sm-2 col-form-label">Value</label>
+            <div class="col-sm-3">
+                <input class="form-control value-input" type="text">
+            </div>
+
+            <div class="col-sm-2">
+                <button class="btn btn-danger delete-btn" type="button">Delete</button>
+            </div>
+        </div>
+
+        <div class="mb-3 row rule"> <!-- Combine the class attributes into a single attribute -->
+            <label class="col-sm-2 col-form-label">Attribute Name(English Only)</label>
+            <div class="col-sm-3">
+                <input class="form-control name-input" type="text" value="Activity">
             </div>
 
             <label class="col-sm-2 col-form-label">Value</label>
@@ -81,6 +97,33 @@ Admin - Digital Certificate
         </div>
         <div class="col-sm-4"></div>
     </div>
+
+    <div class="mb-3 row">
+        <div class="col-sm-12" style="text-align: center;">
+            <p>After uploading files successfully, please refresh to view your files below</p>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Folder</th>
+                <th scope="col">Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+                    {% for file in uploaded_files %}
+                      <tr>
+                        <th scope="row">{{ file['id'] }}</th>
+                        <td>{{ file['upload_date'] }}</td>
+                        <td>{{ file['filename'] }}</td>
+                      </tr>
+                    {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
 </div>
 
 <div class="modal " tabindex="-1">
