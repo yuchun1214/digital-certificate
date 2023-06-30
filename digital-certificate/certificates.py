@@ -45,7 +45,12 @@ def upload_file():
         # print(pdffile.Info)
         info = {}
         for key in pdffile.Info:
-            info[key[1:]] = pdffile.Info[key][1:-1]
+            if pdffile.Info[key][0] == '<' and pdffile.Info[key][-1] == '>':
+                byte_string = bytes.fromhex(pdffile.Info[key][1:-1])
+                decoded_string = byte_string.decode('utf-16')
+                info[key[1:]] = decoded_string
+            else:
+                info[key[1:]] = pdffile.Info[key][1:-1]
         print(info)
         remove(filename)
         return jsonify({'message' : 'successful', 'info' : info})
