@@ -94,3 +94,21 @@ def admin():
         })
     print(files)
     return render_template('admin.html', uploaded_files=files)
+
+@bp.route('/admin/delete', methods=['POST'])
+@login_required
+def delete():
+    db = get_db() 
+    file_id = request.json['id']
+    folder = request.json['folder']
+    filename = request.json['filename']
+    print(file_id)
+    query = "DELETE FROM hash_table WHERE id = ? AND upload_date = ? AND filename = ?"
+    params =(file_id, folder, filename)
+
+    result = db.execute(query, params)
+    db.commit()
+    # db.session.commit()
+    filepath = os.path.join(current_app.config['UPLOAD_FOLDER'],folder,filename)
+    os.remove(filepath)
+    return jsonify({'status' : 'success'}), 200
