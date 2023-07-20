@@ -107,7 +107,7 @@ def admin():
             'filename' : i['filename'],
             'upload_date' : i['upload_date']
         })
-    print(files)
+    # print(files)
     return render_template('admin.html', uploaded_files=files)
 
 @bp.route('/admin/delete', methods=['POST'])
