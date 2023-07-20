@@ -90,10 +90,13 @@ Admin - Digital Certificate
 
         <div class="col-sm-4"></div>
         <div class="col-sm-2">
-            <button class="btn btn-light" id="add-attr-btn">Add an attribute</button>
+            <button class="btn btn-light" id="add-attr-btn" style="height: 3rem;">Add an attribute</button>
         </div>
         <div class="col-sm-2">
-            <button type="button" class="btn btn-primary" id="upload-btn">Upload</button>
+            <!-- The rolling uploading spinner looks like meme :P. Hope you like it too-->
+            <button type="button" class="btn btn-primary" id="upload-btn" style="height: 3rem;">
+                Upload
+            </button>
         </div>
         <div class="col-sm-4"></div>
     </div>
@@ -118,7 +121,7 @@ Admin - Digital Certificate
                       <tr id="file-{{ file['id'] }}">
                         <th scope="row">{{ file['id'] }}</th>
                         <td>{{ file['upload_date'] }}</td>
-                        <td>{{ file['filename'] }}</td>
+                        <td><a href="/admin/download?folder={{file['upload_date']}}&filename={{file['filename']}}">{{ file['filename'] }}</a></td>
                         <td><button type="button" class="btn btn-danger" onclick="deleteFile({{ file['id'] }}, `{{ file['upload_date']}}`, `{{ file['filename']}}` )">Delete</button></td>
                       </tr>
                     {% endfor %}
@@ -201,6 +204,18 @@ Admin - Digital Certificate
         var attrs = collectAttributes();
         console.log(attrs)
         $('#attributes').val(JSON.stringify(attrs));
+        $('#upload-btn').attr('disabled', true);
+        $('#upload-btn').empty();
+        $('#upload-btn').html(
+            `
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="spinner-border" role="status">
+                    Upload
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            `
+        )
 
         var formData = new FormData(document.getElementById('form'));
         fetch('/admin/upload', {
@@ -231,6 +246,10 @@ Admin - Digital Certificate
                 $('#modal-message').text('Failed to upload since ' + _message);
                 $('.modal').modal('show');
             }
+
+            $('#upload-btn').attr('disabled', false);
+            $('#upload-btn').empty();
+            $('#upload-btn').html('Upload');
         }).catch(error => {
             console.log('Error:', error.message);
             $('#modal-message').text(error.message)

@@ -1,9 +1,11 @@
 import os
 import json
 import hashlib
+import glob
 from datetime import datetime, timezone,timedelta
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app,
+    send_file
 )
 
 from pdfrw import (
@@ -78,6 +80,19 @@ def upload():
             return jsonify({'status' : 'failed', 'message' : str(e)}), 500
             
     return jsonify({'status': 'success'}), 200
+
+@bp.route('/admin/download', methods=['GET'])
+@login_required
+def download_file():
+    folder = request.args.get('folder')
+    filename = request.args.get('filename')
+    print(folder, filename)
+
+    files = glob.glob(os.path.join(current_app.config['UPLOAD_FOLDER'], folder, filename))
+    if len(files) > 0:
+        return send_file(files[0], as_attachment=True)
+    else:
+        redirect('/expired')
 
 @bp.route('/admin', methods=['GET'])
 @login_required
