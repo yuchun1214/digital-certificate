@@ -118,7 +118,7 @@ Admin - Digital Certificate
                       <tr id="file-{{ file['id'] }}">
                         <th scope="row">{{ file['id'] }}</th>
                         <td>{{ file['upload_date'] }}</td>
-                        <td>{{ file['filename'] }}</td>
+                        <td><a href="/admin/download?folder={{file['upload_date']}}&filename={{file['filename']}}">{{ file['filename'] }}</a></td>
                         <td><button type="button" class="btn btn-danger" onclick="deleteFile({{ file['id'] }}, `{{ file['upload_date']}}`, `{{ file['filename']}}` )">Delete</button></td>
                       </tr>
                     {% endfor %}
