@@ -84,7 +84,7 @@ def recaptcha_required(view):
                 token = request.form['recaptcha_token']
                 url = f'{current_app.config["reCAPTCHA_VERIFY_URL"]}?secret={current_app.config["reCAPTCHA_SECRET_KEY"]}&response={token}'
                 verify_response = requests.post(url=url).json()
-
+                print(verify_response)
                 if verify_response['success'] == False or verify_response['score'] < 0.5:
                     return jsonify({
                         'message' : 'recaptcha failed',
