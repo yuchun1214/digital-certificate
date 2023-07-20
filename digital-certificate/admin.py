@@ -3,7 +3,6 @@ import json
 import hashlib
 import glob
 from datetime import datetime, timezone,timedelta
-import time
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, send_file, current_app,
     send_file
@@ -25,7 +24,6 @@ bp = Blueprint('admin', __name__)
 def upload():
     print(request.form)
     print(request.form['date'])
-    time.sleep(5)
     
     # check date
     if len(request.form['date']) == 0:
