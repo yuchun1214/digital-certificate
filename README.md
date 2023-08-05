@@ -34,7 +34,7 @@ There are indeed several ways to start the server in production mode. Here provi
 
 ```shell=
 python3 -m pip install gunicorn
-python3 -m gunicorn -w [number of processors] --bind [binding address] app:app
+python3 -m gunicorn -w [number of processors] --bind [binding address] 'digital-certificate:create_app()'
 ```
 
 ## API docs
